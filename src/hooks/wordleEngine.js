@@ -25,7 +25,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         var letterOrder = [];
         letterOrder.push(['A',   'Z',   'E', 'R', 'T', 'Y', 'U', 'I', 'O',     'P']);
         letterOrder.push(['Q',   'S',   'D', 'F', 'G', 'H', 'J', 'K', 'L',     'M' ]);
-        letterOrder.push(['Backspace', 'Backspace', 'W', 'X', 'C', 'V', 'B', 'N', 'Enter', 'Enter']);
+        letterOrder.push(['Backspace', 'W', 'X', 'C', 'V', 'B', 'N', 'Enter']);
         var res = [];
         letterOrder.map((l, i) => {
                 var row = [];
@@ -45,8 +45,15 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
                     console.log(keyboard);
                     if (color === 'state-rightplace') {
                         keyboard[i][j].color = color;
-                    } else if ((color === 'state-wrongplace') && (keyboard[i][j].color != 'state-rightplace')) {
-                        keyboard[i][j].color = color;
+                    } else if (color === 'state-wrongplace') {
+                        if (keyboard[i][j].color != 'state-rightplace') {
+                            keyboard[i][j].color = color;
+                        }
+                    } else {
+                        // color is state-notfound
+                        if (keyboard[i][j].color === 'state-unknown') {
+                            keyboard[i][j].color = color;
+                        }
                     }
                 }
             }
@@ -66,6 +73,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         var display = [...word]  // get an array of the current word
             .map(   // for all the letters
                 (l) => { 
+                    setKeyboard((prev) => setKeyboardKey(prev, l, 'state-notfound'));
                     return { key: l, color: 'state-notfound'};
                 }
             ); 

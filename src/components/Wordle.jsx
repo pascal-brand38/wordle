@@ -18,11 +18,11 @@ export default function Wordle( { wordToGuess } ){
 
   return (
     <>
-        <div className="info-container">
-        <div className="info-item">
+        <div className="wordle-info">
+            <div className="wordle-info-item">
                 Mot à deviner: {wordToGuess}
             </div>
-            <div className="info-item">
+            <div className="wordle-info-item">
                 Mot en cours: {wordCurrent}
             </div>
         </div>
