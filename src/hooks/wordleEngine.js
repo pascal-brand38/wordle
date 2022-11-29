@@ -42,7 +42,6 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
                 var j = l.findIndex((l) => l.key === key);
                 if (j != -1) {
                     found = true;
-                    console.log(keyboard);
                     if (color === 'state-rightplace') {
                         keyboard[i][j].color = color;
                     } else if (color === 'state-wrongplace') {
@@ -61,12 +60,29 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         return keyboard;
     }
 
+    const [ iteration, setIteration ] = useState(0);   // current word typed by the used, as a string
     const [ wordCurrent, setWordCurrent ] = useState('');   // current word typed by the used, as a string
     const [ history, setHistory] = useState([]);            // history of guessed in this play
     const [ guessDisplay, setGuessDisplay ] = useState(initGuessDisplay());   // array of { key:'a', color:'state-rightplace|state-wrongplace|state-notfound' }
     const [ guessTurn, setGuessTurn ] = useState(0);        // nb of turn completed
     const [ letterIndex, setLetterIndex ] = useState(0);    // current letter index that we set
     const [ keyboard, setKeyboard ] = useState(initKeyboard());
+
+    /// Error management
+    /// errors are string, and are used as the class name too for the effect to occur
+    const errorsList = [ 
+        'error-none',           /// no error
+        'error-nbletters',      /// too few letters are submitted
+        'error-nturns'          /// no more guesses are possible
+    ]
+    const [ error, setError ] = useState('error-none');
+    const setErrorWithCheck = (e) => {
+        if (errorsList.find((element) => element === e) == -1) {
+            throw 'Erreur inconnue: ' + e;
+        }
+        setError(e);
+    }
+    const resetError = () => { setErrorWithCheck('error-none'); }
 
     const computeLastGuessDisplay = (word) => {
         var arrayWordToGuess = [...wordToGuess];        // from the string wordToGuess, get an array of letters
@@ -96,7 +112,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
             }
         });
 
-        return display;
+        return(display);
     }
 
     // Processed when a key is pressed
@@ -105,13 +121,14 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
             return;
         }
         const key = e.key;
+        setIteration((prev)=>prev+1);
         if (key === 'Enter') {  // submit a word
-            if (wordCurrent.length < charNbWordToGuess) {
-                console.log('Must submit 5 letters')
+            if (letterIndex < charNbWordToGuess) {
+                setErrorWithCheck('error-nbletters');
             } else if (history.includes(wordCurrent)) {
-                console.log('Already submitted')
+                setErrorWithCheck('error-submitted');
             } else if (guessTurn >= attemptMax) {
-                console.log('Already submitted')
+                setErrorWithCheck('error-nturns');
             } else {
                 setHistory((prev) => prev.concat(wordCurrent) );
                 setGuessDisplay((prev) => { var res = prev; res[guessTurn] = computeLastGuessDisplay(wordCurrent); return res; })
@@ -134,6 +151,6 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         }
     }
 
-    return { wordCurrent, keyboard, guessDisplay, history, keyPressed };
+    return { iteration, wordCurrent, keyboard, guessDisplay, history, guessTurn, error, keyPressed, resetError };
 }
 export default wordleEngine;

@@ -6,29 +6,36 @@ import WordleKeyboard from './WordleKeyboard.jsx'
 const attemptMax = 6;
 
 
-export default function Wordle( { wordToGuess } ){
+export default function Wordle({ wordToGuess }) {
 
-  const { wordCurrent, history, guessDisplay, keyboard, keyPressed } = wordleEngine(wordToGuess, attemptMax)
+    /// TODO: iteration is used because guessDisplay not correctly rendered when wordCurrent not updated
+    /// TODO: remove iteration which is a hack
+    const { iteration, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, keyPressed } = wordleEngine(wordToGuess, attemptMax)
 
-  useEffect(() => {
-    window.addEventListener('keyup', keyPressed)
+    useEffect(() => {
+        window.addEventListener('keyup', keyPressed)
 
-    return () => window.removeEventListener('keyup', keyPressed)
-  }, [keyPressed])
+        return () => window.removeEventListener('keyup', keyPressed)
+    }, [keyPressed]);
 
-  return (
-    <>
-        <div className="wordle-info">
-            <div className="wordle-info-item">
-                Mot à deviner: {wordToGuess}
+    useEffect(() => {
+        if (error != 'error-none') {
+            window.setTimeout(resetError, 2000);
+        }
+    }, [error]);
+
+    return (
+        <>
+            <div className="wordle-info">
+                <div className="wordle-info-item">
+                    Mot à deviner: {wordToGuess}
+                </div>
+                <div className="wordle-info-item">
+                </div>
             </div>
-            <div className="wordle-info-item">
-                Mot en cours: {wordCurrent}
-            </div>
-        </div>
 
-        <WordleGrid guessDisplay={guessDisplay}/>
-        <WordleKeyboard keyboard={keyboard} keyPressed={keyPressed}/>
-    </>
+            <WordleGrid guessDisplay={guessDisplay} guessTurn={guessTurn} error={error} />
+            <WordleKeyboard keyboard={keyboard} keyPressed={keyPressed} />
+        </>
     );
 }
