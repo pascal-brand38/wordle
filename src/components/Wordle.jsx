@@ -10,7 +10,7 @@ export default function Wordle({ wordToGuess }) {
 
     /// TODO: iteration is used because guessDisplay not correctly rendered when wordCurrent not updated
     /// TODO: remove iteration which is a hack
-    const { iteration, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, keyPressed } = wordleEngine(wordToGuess, attemptMax)
+    const { iteration, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, flipRow, keyPressed } = wordleEngine(wordToGuess, attemptMax)
 
     useEffect(() => {
         window.addEventListener('keyup', keyPressed)
@@ -34,7 +34,7 @@ export default function Wordle({ wordToGuess }) {
                 </div>
             </div>
 
-            <WordleGrid guessDisplay={guessDisplay} guessTurn={guessTurn} error={error} />
+            <WordleGrid guessDisplay={guessDisplay} guessTurn={guessTurn} error={error} flipRow={flipRow} />
             <WordleKeyboard keyboard={keyboard} keyPressed={keyPressed} />
         </>
     );

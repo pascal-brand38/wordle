@@ -67,6 +67,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
     const [ guessTurn, setGuessTurn ] = useState(0);        // nb of turn completed
     const [ letterIndex, setLetterIndex ] = useState(0);    // current letter index that we set
     const [ keyboard, setKeyboard ] = useState(initKeyboard());
+    const [ flipRow, setFlipRow ] = useState(-1);
 
     /// Error management
     /// errors are string, and are used as the class name too for the effect to occur
@@ -133,6 +134,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
                 setHistory((prev) => prev.concat(wordCurrent) );
                 setGuessDisplay((prev) => { var res = prev; res[guessTurn] = computeLastGuessDisplay(wordCurrent); return res; })
                 setWordCurrent('')
+                setFlipRow(guessTurn);
                 setGuessTurn((prev) => prev+1)
                 setLetterIndex(0)
             }
@@ -151,6 +153,6 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         }
     }
 
-    return { iteration, wordCurrent, keyboard, guessDisplay, history, guessTurn, error, keyPressed, resetError };
+    return { iteration, wordCurrent, keyboard, guessDisplay, history, guessTurn, error, flipRow, keyPressed, resetError };
 }
 export default wordleEngine;

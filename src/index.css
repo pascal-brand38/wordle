@@ -1,11 +1,18 @@
-html { box-sizing: border-box; }
-*, *:before, *:after { box-sizing: inherit; }
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
 
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
 }
 
 
@@ -13,8 +20,7 @@ body {
     margin: 0;
 }
 
-.container {
-}
+.container {}
 
 :root {
     --info-height: 4rem;
@@ -28,21 +34,11 @@ body {
     --total-rows: calc(var(--cell-nrows) + var(--key-nrows));
 
     --key-margin: .2rem;
-    --key-height-wide: calc((100vw / var(--key-ncols)) - ( 2 * var(--key-margin)));
-    --key-height-tall: calc(
-        (
-            100vh 
-            - var(--info-full-height) 
-            - 2*var(--grid-margin-top)
-            - (var(--total-rows) * var(--key-margin) * 2)
-        ) 
-        / (var(--total-rows)));
+    --key-height-wide: calc((100vw / var(--key-ncols)) - (2 * var(--key-margin)));
+    --key-height-tall: calc((100vh - var(--info-full-height) - 2*var(--grid-margin-top) - (var(--total-rows) * var(--key-margin) * 2)) / (var(--total-rows)));
     --key-height: min(3rem, min(var(--key-height-tall), var(--key-height-wide)));
     --key-double-width: min(calc(6rem + (2 * var(--key-margin))), calc((2 * var(--key-height)) + (2 * var(--key-margin))));
-    --key-full-height: calc(
-        2 * var(--key-nrows) 
-        * 
-        ( var(--key-height) + ( 2 * var(--key-margin) ) ) );
+    --key-full-height: calc(2 * var(--key-nrows) * (var(--key-height) + (2 * var(--key-margin))));
 
     --cell-margin: .2rem;
     --cell-height: var(--key-height);
@@ -58,32 +54,87 @@ body {
     overflow: hidden;
 }
 
-.wordle-grid, .keyboard-grid {
+.wordle-grid,
+.keyboard-grid {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: var(--grid-margin-top);
 }
 
-.wordle-row, .keyboard-row {
+.wordle-row,
+.keyboard-row {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.wordle-cell {
+.wordle-cell__flip {
+    /* this is a flipping cell */
+    background-color: transparent;
+    perspective: 1000px;
+}
+
+.wordle-cell__size {
     width: var(--cell-height);
     height: var(--cell-height);
     margin: var(--cell-margin);
-    border: 2px solid black;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
     font-size: max(.5rem, calc(var(--cell-height) - 10px));
     font-weight: bold;
 }
+
+.wordle-cell__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg);
+    animation: animation-flip linear .5s forwards;
+}
+
+.flip-delay-0 { animation-delay: 0s; }
+.flip-delay-1 { animation-delay: .25s; }
+.flip-delay-2 { animation-delay: .5s; }
+.flip-delay-3 { animation-delay: .75s; }
+.flip-delay-4 { animation-delay: 1s; }
+
+@keyframes animation-flip {
+    to {
+        transform: rotateX(180deg);
+    }
+}
+/*
+.wordle-cell__flip:hover .wordle-cell__inner {
+    transform: rotateY(180deg);
+}
+*/
+
+.wordle-cell__front,
+.wordle-cell__back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.wordle-cell__front {}
+
+.wordle-cell__back {
+    transform: rotateX(180deg);
+}
+
+.wordle-cell__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    border-radius: 3px;
+}
+
+
 
 .keyboard-cell {
     display: flex;
@@ -97,8 +148,8 @@ body {
 
     font-size: max(.5rem, calc(var(--cell-height) - 10px));
     font-weight: bold;
-    border-radius: 6px;
-    border: none; /* erase UA default */
+    border: none;
+    /* erase UA default */
     border-radius: 3px;
 }
 
@@ -110,22 +161,28 @@ body {
     color: white;
     background-color: #6aaa64;
 }
+
 .state-wrongplace {
     color: white;
     background-color: #c9b458;
 }
+
 .state-notfound {
     color: white;
     background-color: #787c7e;
 }
+
 .state-unknown {
     color: black;
     background-color: #d3d6da;
 }
 
-.error-nbletters, .error-submitted, .error-nturns {
-    animation: animation-shake linear .5s ;
+.error-nbletters,
+.error-submitted,
+.error-nturns {
+    animation: animation-shake linear .5s;
 }
+
 @keyframes animation-shake {
     0% {
         transform: translateX(0)
@@ -170,9 +227,11 @@ body {
     z-index: 1;
 
     opacity: 1;
-    animation: animation-opacity ease-in-out 1s ;
-}
-@keyframes animation-opacity {
-    from {opacity: 0;}
+    animation: animation-opacity ease-in-out 1s;
 }
 
+@keyframes animation-opacity {
+    from {
+        opacity: 0;
+    }
+}
