@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 function WordleCell({ guessDisplayCell, flip, col }) {
     if (flip) {
         return (

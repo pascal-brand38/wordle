@@ -5,9 +5,13 @@
 ///
 
 import { useState } from 'react'
+// JS libraries used to compute wordle, but does not display it
+import getOneWord from './frenchDict.js'
 
-const wordleEngine = ( wordToGuess , attemptMax) => {
-    const charNbWordToGuess = wordToGuess.length;           // number of char in the word to guess
+
+const wordleEngine = () => {
+    const charNbWordToGuess = 5;           // number of char in the word to guess
+    const attemptMax = 6;
 
     const initGuessDisplay = () => {
         var res = [];
@@ -68,6 +72,23 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
     const [ letterIndex, setLetterIndex ] = useState(0);    // current letter index that we set
     const [ keyboard, setKeyboard ] = useState(initKeyboard());
     const [ flipRow, setFlipRow ] = useState(-1);
+    const [ endOfGame, setEndOfGame ] = useState( { win: false, loose: false })
+    const [ wordToGuess, setWordToGuess ] = useState(getOneWord())
+
+    const newGame = (wordToGuess, attemptMax) => {
+        setIteration(0);
+        setWordCurrent('');   // current word typed by the used, as a string
+        setHistory([]);            // history of guessed in this play
+        setGuessDisplay (initGuessDisplay());   // array of { key:'a', color:'state-rightplace|state-wrongplace|state-notfound' }
+        setGuessTurn(0);        // nb of turn completed
+        setLetterIndex(0);    // current letter index that we set
+        setKeyboard(initKeyboard());
+        setFlipRow(-1);
+        setEndOfGame( { win: false, loose: false })
+        setError('error-none')
+        setWordToGuess(getOneWord());
+
+    }
 
     /// Error management
     /// errors are string, and are used as the class name too for the effect to occur
@@ -118,7 +139,7 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
 
     // Processed when a key is pressed
     const keyPressed = ( e ) => {       // e is the event returned by the event addEventListener('keyup'
-        if (guessTurn >= attemptMax) {
+        if (endOfGame.win || endOfGame.loose) {
             return;
         }
         const key = e.key;
@@ -128,9 +149,12 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
                 setErrorWithCheck('error-nbletters');
             } else if (history.includes(wordCurrent)) {
                 setErrorWithCheck('error-submitted');
-            } else if (guessTurn >= attemptMax) {
-                setErrorWithCheck('error-nturns');
             } else {
+                if (wordCurrent === wordToGuess) {
+                    setEndOfGame( { win:true, loose:false })
+                } else if (guessTurn+1 === attemptMax) {
+                    setEndOfGame( { win:false, loose:true })
+                }
                 setHistory((prev) => prev.concat(wordCurrent) );
                 setGuessDisplay((prev) => { var res = prev; res[guessTurn] = computeLastGuessDisplay(wordCurrent); return res; })
                 setWordCurrent('')
@@ -153,6 +177,6 @@ const wordleEngine = ( wordToGuess , attemptMax) => {
         }
     }
 
-    return { iteration, wordCurrent, keyboard, guessDisplay, history, guessTurn, error, flipRow, keyPressed, resetError };
+    return { wordToGuess, iteration, wordCurrent, keyboard, guessDisplay, history, guessTurn, error, flipRow, endOfGame, newGame, keyPressed, resetError };
 }
 export default wordleEngine;

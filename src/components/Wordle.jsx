@@ -2,15 +2,13 @@ import { useEffect } from 'react'
 import wordleEngine from '../hooks/wordleEngine.js'
 import WordleGrid from './WordleGrid.jsx'
 import WordleKeyboard from './WordleKeyboard.jsx'
+import WordleDone from './WordleDone.jsx'
 
-const attemptMax = 6;
-
-
-export default function Wordle({ wordToGuess }) {
+export default function Wordle() {
 
     /// TODO: iteration is used because guessDisplay not correctly rendered when wordCurrent not updated
     /// TODO: remove iteration which is a hack
-    const { iteration, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, flipRow, keyPressed } = wordleEngine(wordToGuess, attemptMax)
+    const { iteration, wordToGuess, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, flipRow, endOfGame, newGame, keyPressed } = wordleEngine()
 
     useEffect(() => {
         window.addEventListener('keyup', keyPressed)
@@ -28,14 +26,18 @@ export default function Wordle({ wordToGuess }) {
         <>
             <div className="wordle-info">
                 <div className="wordle-info-item">
-                    Mot à deviner: {wordToGuess}
-                </div>
-                <div className="wordle-info-item">
+                    Wordle
                 </div>
             </div>
 
             <WordleGrid guessDisplay={guessDisplay} guessTurn={guessTurn} error={error} flipRow={flipRow} />
             <WordleKeyboard keyboard={keyboard} keyPressed={keyPressed} />
+
+            <WordleDone 
+                endOfGame={endOfGame}
+                wordToGuess={wordToGuess}
+                newGame = {newGame}
+            />
         </>
     );
 }
