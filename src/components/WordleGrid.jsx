@@ -1,34 +1,34 @@
-function WordleCell({ guessDisplayCell, flip, col }) {
+function WordleCell({ gridDisplayCell, flip, col }) {
     if (flip) {
         return (
             <div className="wordle-cell__flip wordle-cell__size">
                 <div className={`wordle-cell__inner flip-delay-${col}`}>
                     <div className="wordle-cell__content wordle-cell__front state-unknown">
-                        { guessDisplayCell.key }
+                        { gridDisplayCell.key }
                     </div>
-                    <div className={`wordle-cell__content wordle-cell__back  ${guessDisplayCell.color}`}>
-                        { guessDisplayCell.key }
+                    <div className={`wordle-cell__content wordle-cell__back  ${gridDisplayCell.color}`}>
+                        { gridDisplayCell.key }
                     </div>
                 </div>
             </div>
         );
     } else {
         return (
-            <div className={`wordle-cell__size wordle-cell__content ${guessDisplayCell.color}`}>
-                { guessDisplayCell.key }
+            <div className={`wordle-cell__size wordle-cell__content ${gridDisplayCell.color}`}>
+                { gridDisplayCell.key }
             </div>
         );
     }
 }
 
-function WordleRow({ guessDisplayRow, error, flip }) {
+function WordleRow({ gridDisplayRow, error, flip }) {
     var addClass = '';
     if (error != 'error-none') {
         addClass = error;
     }
     return (
         <div className={`wordle-row ${addClass}`}>
-            {guessDisplayRow.map((l, i) => <WordleCell key={i} guessDisplayCell={l} flip={flip} col={i}/>)}
+            {gridDisplayRow.map((l, i) => <WordleCell key={i} gridDisplayCell={l} flip={flip} col={i}/>)}
         </div>
     )
 }
@@ -53,18 +53,18 @@ function WordleShowError({ error }) {
     }
 }
 
-export default function WordleGrid({ guessDisplay, guessTurn, error, flipRow }) {
+export default function WordleGrid({ gridDisplay, guessTurn, error, flipRow }) {
     return (
         <div className='wordle-grid'>
             <WordleShowError error={error} />
-            { guessDisplay.map((l, i) => {
+            { gridDisplay.map((l, i) => {
                 var currentError;
                 if (i === guessTurn) {
                     currentError = error;
                 } else {
                     currentError = 'error-none';
                 }
-                return (<WordleRow key={i} guessDisplayRow={guessDisplay[i]} error={currentError} flip={(flipRow === i)} />);
+                return (<WordleRow key={i} gridDisplayRow={gridDisplay[i]} error={currentError} flip={(flipRow === i)} />);
             })}
         </div>
     );

@@ -1,5 +1,5 @@
 function WordleKeyboardKey({keyboardKey, keyPressed}) {
-///    <button className={`wordle-cell ${keyboardKey.color}`} onClick={keyPressed({key: keyboardKey.key})}>
+///    <button className={`wordle-cell ${keyboardKey.state}`} onClick={keyPressed({key: keyboardKey.key})}>
     var addClass ='';
     var key = keyboardKey.key;
     if (keyboardKey.key === 'Enter') {
@@ -12,7 +12,7 @@ function WordleKeyboardKey({keyboardKey, keyPressed}) {
     }
 
     return (
-        <button className={`keyboard-cell ${addClass} ${keyboardKey.color}`} onClick={() => keyPressed({key: keyboardKey.key})}>
+        <button className={`keyboard-cell ${addClass} ${keyboardKey.state}`} onClick={() => keyPressed({key: keyboardKey.key})}>
             {key}
         </button>
     )
@@ -26,10 +26,10 @@ function WordleKeyboardRow({keyboardRow, keyPressed}) {
     )
 }
 
-export default function WordleKeyboard({keyboard, keyPressed}) {
+export default function WordleKeyboard({keyboardDisplay, keyPressed}) {
     return(
         <div className='keyboard-grid'>
-            { keyboard.map((l, i) => <WordleKeyboardRow key={i} keyboardRow={l} keyPressed={keyPressed} />) }
+            { keyboardDisplay.map((l, i) => <WordleKeyboardRow key={i} keyboardRow={l} keyPressed={keyPressed} />) }
         </div>
     );
 }

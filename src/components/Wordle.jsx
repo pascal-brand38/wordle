@@ -6,21 +6,7 @@ import WordleDone from './WordleDone.jsx'
 
 export default function Wordle() {
 
-    /// TODO: iteration is used because guessDisplay not correctly rendered when wordCurrent not updated
-    /// TODO: remove iteration which is a hack
-    const { iteration, wordToGuess, wordCurrent, keyboard, guessDisplay, error, resetError, history, guessTurn, flipRow, endOfGame, newGame, keyPressed } = wordleEngine()
-
-    useEffect(() => {
-        window.addEventListener('keyup', keyPressed)
-
-        return () => window.removeEventListener('keyup', keyPressed)
-    }, [keyPressed]);
-
-    useEffect(() => {
-        if (error != 'error-none') {
-            window.setTimeout(resetError, 2000);
-        }
-    }, [error]);
+    const { gridDisplay, keyboardDisplay, state, newGame, keyPressed } = wordleEngine()
 
     return (
         <>
@@ -30,12 +16,12 @@ export default function Wordle() {
                 </div>
             </div>
 
-            <WordleGrid guessDisplay={guessDisplay} guessTurn={guessTurn} error={error} flipRow={flipRow} />
-            <WordleKeyboard keyboard={keyboard} keyPressed={keyPressed} />
+            <WordleGrid gridDisplay={gridDisplay} guessTurn={state.guessTurn} error={state.error} flipRow={state.flipRow} />
+            <WordleKeyboard keyboardDisplay={keyboardDisplay} keyPressed={keyPressed} />
 
             <WordleDone 
-                endOfGame={endOfGame}
-                wordToGuess={wordToGuess}
+                endOfGame={state.endOfGame}
+                wordToGuess={state.wordToGuess}
                 newGame = {newGame}
             />
         </>
